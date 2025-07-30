@@ -88,11 +88,16 @@ export const PackagesScreen = () => {
         return;
       }
       // Get user profile
-      const { data: profile } = await supabase
+      const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('display_name')
         .eq('user_id', user.id)
         .single();
+      if (profileError) {
+        toast({ title: 'Profile Error', description: 'Please complete your profile before ordering.', variant: 'destructive' });
+        navigate('/profile');
+        return;
+      }
       // Prompt for more details
       let contact = '';
       let details = '';

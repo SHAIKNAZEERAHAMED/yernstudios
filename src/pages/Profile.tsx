@@ -48,13 +48,21 @@ const Profile = () => {
     }
   }, []);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (user) {
+      // Update in Supabase
+      const { error } = await supabase
+        .from('profiles')
+        .update({ display_name: formData.name })
+        .eq('user_id', user.email);
+      if (error) {
+        toast({ title: 'Error', description: 'Failed to update profile.', variant: 'destructive' });
+        return;
+      }
       const updatedUser = { ...user, ...formData };
       setUser(updatedUser);
       localStorage.setItem('yarn_user', JSON.stringify(updatedUser));
       setEditing(false);
-      
       toast({
         title: "Profile Updated",
         description: "Your profile has been successfully updated."
