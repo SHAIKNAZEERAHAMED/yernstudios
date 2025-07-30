@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 const videoPackages = [
 	{
 		title: "Short Form Content",
-		price: "$800-1500",
+		price: "$800",
 		description:
 			"Perfect for TikToks, Reels, and Shorts (up to 1 minute in length)",
 		features: [
@@ -22,7 +22,7 @@ const videoPackages = [
 	},
 	{
 		title: "Medium Form Content",
-		price: "$2500-3500",
+		price: "$2500",
 		description:
 			"Ideal for YouTube videos, podcasts, and tutorials (up to 10 minutes in length)",
 		features: [
@@ -36,7 +36,7 @@ const videoPackages = [
 	},
 	{
 		title: "Long Form Content",
-		price: "$3500-6000",
+		price: "$3500",
 		description:
 			"Best for documentaries, films, and extended content (over 10 minutes in length)",
 		features: [
@@ -78,7 +78,7 @@ const webPackages = [
 	},
 	{
 		title: "E-commerce Website",
-		price: "$20000-27000",
+		price: "$20000",
 		description:
 			"A fully functional online store with product listings and payment integration",
 		features: [
