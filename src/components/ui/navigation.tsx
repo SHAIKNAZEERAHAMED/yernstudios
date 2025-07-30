@@ -1,9 +1,8 @@
-import { Home, Package, FolderOpen, Mail, User } from "lucide-react";
+import { Package, FolderOpen, Mail, User } from "lucide-react";
 import { useLocation, Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 const navigationItems = [
-  { icon: Home, label: "Home", path: "/" },
   { icon: Package, label: "Packages", path: "/packages" },
   { icon: FolderOpen, label: "Projects", path: "/projects" },
   { icon: Mail, label: "Contact", path: "/contact" },
