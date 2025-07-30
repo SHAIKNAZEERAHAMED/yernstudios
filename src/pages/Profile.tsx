@@ -33,28 +33,46 @@ const Profile = () => {
       const { data: { user: authUser } } = await supabase.auth.getUser();
       if (authUser && ["nazeershiek098@gmail.com", "yernstudios@gmail.com"].includes(authUser.email)) {
         navigate("/admin-dashboard");
+        return;
+      }
+      // Fetch user profile from Supabase
+      if (authUser) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('user_id', authUser.id)
+          .single();
+        if (profile) {
+          setUser({
+            name: profile.display_name || authUser.email?.split('@')[0] || 'User',
+            email: authUser.email,
+            membershipLevel: profile.membership_level || 'Basic Member',
+            profilePicture: profile.avatar_url || akariProfile
+          });
+          setFormData({
+            name: profile.display_name || '',
+            email: authUser.email
+          });
+        }
       }
     };
     checkAdmin();
-
-    const userData = localStorage.getItem('yarn_user');
-    if (userData) {
-      const parsedUser = JSON.parse(userData);
-      setUser(parsedUser);
-      setFormData({
-        name: parsedUser.name,
-        email: parsedUser.email
-      });
-    }
   }, []);
 
   const handleSave = async () => {
     if (user) {
-      // Update in Supabase
+      // Get current Supabase user
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      if (!authUser) {
+        toast({ title: 'Not logged in', description: 'Please log in again.', variant: 'destructive' });
+        navigate('/login');
+        return;
+      }
+      // Update in Supabase using user_id
       const { error } = await supabase
         .from('profiles')
         .update({ display_name: formData.name })
-        .eq('user_id', user.email);
+        .eq('user_id', authUser.id);
       if (error) {
         toast({ title: 'Error', description: 'Failed to update profile.', variant: 'destructive' });
         return;

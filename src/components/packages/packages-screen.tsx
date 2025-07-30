@@ -93,7 +93,7 @@ export const PackagesScreen = () => {
         .select('display_name')
         .eq('user_id', user.id)
         .single();
-      if (profileError) {
+      if (profileError || !profile || !profile.display_name) {
         toast({ title: 'Profile Error', description: 'Please complete your profile before ordering.', variant: 'destructive' });
         navigate('/profile');
         return;
