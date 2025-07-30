@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 const videoPackages = [
 	{
 		title: "Short Form Content",
-		price: "$50",
+		price: "$800-1500",
 		description:
 			"Perfect for TikToks, Reels, and Shorts (up to 1 minute in length)",
 		features: [
@@ -22,7 +22,7 @@ const videoPackages = [
 	},
 	{
 		title: "Medium Form Content",
-		price: "$150",
+		price: "$2500-3500",
 		description:
 			"Ideal for YouTube videos, podcasts, and tutorials (up to 10 minutes in length)",
 		features: [
@@ -36,7 +36,7 @@ const videoPackages = [
 	},
 	{
 		title: "Long Form Content",
-		price: "$300",
+		price: "$3500-6000",
 		description:
 			"Best for documentaries, films, and extended content (over 10 minutes in length)",
 		features: [
@@ -52,7 +52,7 @@ const videoPackages = [
 const webPackages = [
 	{
 		title: "Landing Page",
-		price: "$500",
+		price: "$9000",
 		description: "A single-page website to showcase your brand or product",
 		features: [
 			"Responsive design",
@@ -64,7 +64,7 @@ const webPackages = [
 	},
 	{
 		title: "Small Business Website",
-		price: "$1,500",
+		price: "$15000",
 		description:
 			"A multi-page website with essential features for small businesses",
 		features: [
@@ -78,7 +78,7 @@ const webPackages = [
 	},
 	{
 		title: "E-commerce Website",
-		price: "$3,000",
+		price: "$20000-27000",
 		description:
 			"A fully functional online store with product listings and payment integration",
 		features: [
@@ -94,7 +94,7 @@ const webPackages = [
 const appPackages = [
 	{
 		title: "Simple App",
-		price: "$1,000",
+		price: "$27000",
 		description: "A basic app with limited features, suitable for simple tasks",
 		features: [
 			"Basic functionality",
@@ -106,7 +106,7 @@ const appPackages = [
 	},
 	{
 		title: "Feature-Rich App",
-		price: "$3,000",
+		price: "$34000",
 		description:
 			"An app with multiple features and functionalities for a more complex user experience",
 		features: [
@@ -120,7 +120,7 @@ const appPackages = [
 	},
 	{
 		title: "Complex App",
-		price: "$5,000",
+		price: "$60000",
 		description:
 			"A sophisticated app with advanced features, integrations, and a high level of customization",
 		features: [
