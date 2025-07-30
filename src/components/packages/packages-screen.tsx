@@ -96,6 +96,14 @@ export const PackagesScreen = () => {
         .eq('user_id', user.id)
         .single();
 
+      // Prompt for more details
+      const contact = prompt('Enter your contact number:');
+      const details = prompt('Describe your project requirements:');
+      if (!contact || !details) {
+        toast({ title: 'Details Required', description: 'Contact and description are required.' });
+        return;
+      }
+
       // Create order record
       const { data: order, error } = await supabase
         .from('orders')
@@ -108,7 +116,9 @@ export const PackagesScreen = () => {
           currency: 'usd',
           status: 'pending',
           customer_name: profile?.display_name || user.email?.split('@')[0],
-          customer_email: user.email
+          customer_email: user.email,
+          contact,
+          details
         }])
         .select()
         .single();

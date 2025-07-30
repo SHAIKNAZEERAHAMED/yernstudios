@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Settings, Star, Camera, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import akariProfile from "@/assets/akari-profile.jpg";
 
 interface User {
@@ -28,6 +29,14 @@ const Profile = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const checkAdmin = async () => {
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      if (authUser && ["nazeershiek098@gmail.com", "yernstudios@gmail.com"].includes(authUser.email)) {
+        navigate("/admin-dashboard");
+      }
+    };
+    checkAdmin();
+
     const userData = localStorage.getItem('yarn_user');
     if (userData) {
       const parsedUser = JSON.parse(userData);

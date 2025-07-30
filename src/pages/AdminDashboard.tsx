@@ -103,6 +103,8 @@ const AdminDashboard = () => {
                   <TableHead>Amount</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Date</TableHead>
+                  <TableHead>Contact</TableHead>
+                  <TableHead>Description</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -112,11 +114,25 @@ const AdminDashboard = () => {
                     <TableCell>{order.package_name}</TableCell>
                     <TableCell>${order.amount / 100}</TableCell>
                     <TableCell>
-                      <Badge variant={order.status === 'completed' ? 'default' : 'secondary'}>
-                        {order.status}
-                      </Badge>
+                      <select
+                        value={order.status}
+                        onChange={async (e) => {
+                          const newStatus = e.target.value;
+                          await supabase.from('orders').update({ status: newStatus }).eq('id', order.id);
+                          setOrders((prev) => prev.map(o => o.id === order.id ? { ...o, status: newStatus } : o));
+                        }}
+                        className="border rounded px-2 py-1"
+                      >
+                        <option value="pending">Pending</option>
+                        <option value="reviewing">Reviewing</option>
+                        <option value="done">Done</option>
+                        <option value="rejected">Rejected</option>
+                        <option value="delayed">Delayed</option>
+                      </select>
                     </TableCell>
                     <TableCell>{new Date(order.created_at).toLocaleDateString()}</TableCell>
+                    <TableCell>{order.contact || '-'}</TableCell>
+                    <TableCell>{order.details || '-'}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
