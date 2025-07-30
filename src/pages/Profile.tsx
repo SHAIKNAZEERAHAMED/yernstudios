@@ -26,6 +26,7 @@ const Profile = () => {
     email: ""
   });
   const [orders, setOrders] = useState<any[]>([]);
+  const [projects, setProjects] = useState<any[]>([]);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -55,6 +56,12 @@ const Profile = () => {
             email: authUser.email
           });
         }
+        // Fetch user projects
+        const { data: userProjects } = await supabase
+          .from('projects')
+          .select('*')
+          .eq('user_id', authUser.id);
+        setProjects(userProjects || []);
         // Fetch user orders
         const { data: userOrders } = await supabase
           .from('orders')
@@ -145,11 +152,11 @@ const Profile = () => {
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Projects:</span>
-                  <span>3</span>
+                  <span>{projects.length}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Completed:</span>
-                  <span>1</span>
+                  <span>{projects.filter(p => p.status === 'completed' || p.status === 'done').length}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Member Since:</span>
