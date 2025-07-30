@@ -127,7 +127,7 @@ const AdminDashboard = () => {
                   <TableRow key={order.id}>
                     <TableCell>{order.customer_name || order.customer_email}</TableCell>
                     <TableCell>{order.package_name}</TableCell>
-                    <TableCell>${order.amount / 100}</TableCell>
+                    <TableCell>₹{order.amount}</TableCell>
                     <TableCell>
                       <select
                         value={order.status}

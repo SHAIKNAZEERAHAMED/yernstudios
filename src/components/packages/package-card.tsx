@@ -40,7 +40,7 @@ export const PackageCard = ({
         />
         <div className="flex-1">
           <h3 className="text-xl font-bold text-foreground mb-1">{title}</h3>
-          <div className="text-3xl font-bold gradient-text mb-2">{price}</div>
+          <div className="text-3xl font-bold gradient-text mb-2">₹{price.replace(/[^\d]/g, '')}</div>
         </div>
       </div>
       
