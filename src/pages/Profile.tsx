@@ -25,6 +25,7 @@ const Profile = () => {
     name: "",
     email: ""
   });
+  const [orders, setOrders] = useState<any[]>([]);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -54,6 +55,13 @@ const Profile = () => {
             email: authUser.email
           });
         }
+        // Fetch user orders
+        const { data: userOrders } = await supabase
+          .from('orders')
+          .select('*')
+          .eq('user_id', authUser.id)
+          .order('created_at', { ascending: false });
+        setOrders(userOrders || []);
       }
     };
     checkAdmin();
@@ -208,6 +216,42 @@ const Profile = () => {
               )}
             </div>
           </Card>
+        </div>
+
+        {/* My Orders Section */}
+        <div className="mt-12">
+          <h2 className="text-2xl font-bold mb-4">My Orders</h2>
+          {orders.length === 0 ? (
+            <Card className="glass-card p-6 text-center">
+              <p className="text-muted-foreground">No orders yet. Order a package to get started!</p>
+            </Card>
+          ) : (
+            orders.map((order) => (
+              <Card key={order.id} className="glass-card p-6 mb-4">
+                <div className="flex justify-between items-center mb-2">
+                  <div>
+                    <h3 className="font-bold">{order.package_name}</h3>
+                    <p className="text-sm text-muted-foreground mb-1">{order.package_type} - {order.package_tier}</p>
+                    <p className="text-xs text-muted-foreground">{new Date(order.created_at).toLocaleDateString()}</p>
+                  </div>
+                  <Badge variant={order.status === 'completed' ? 'default' : 'secondary'}>{order.status}</Badge>
+                  {order.status === 'pending' && (
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={async () => {
+                        await supabase.from('orders').delete().eq('id', order.id);
+                        setOrders(orders.filter(o => o.id !== order.id));
+                      }}
+                    >
+                      Delete
+                    </Button>
+                  )}
+                </div>
+                <p className="text-muted-foreground text-sm">{order.details}</p>
+              </Card>
+            ))
+          )}
         </div>
 
         {/* Logout Section */}
