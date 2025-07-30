@@ -48,7 +48,7 @@ const Shoots = () => {
 					`Enter location (${shoot.locations.join(", ")}):`
 				);
 				if (input === null) return; // User cancelled
-				if (shoot.locations.includes(input)) {
+				if (shoot.locations.map((l) => l.toLowerCase()).includes(input.toLowerCase())) {
 					location = input;
 					break;
 				}
