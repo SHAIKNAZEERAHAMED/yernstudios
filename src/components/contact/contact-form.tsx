@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Send } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const services = [
   "Video Editing - Short Form",
@@ -27,23 +28,65 @@ export const ContactForm = () => {
     service: "",
     message: ""
   });
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     
-    toast({
-      title: "Message Sent!",
-      description: "Thank you for reaching out. We'll get back to you within 24 hours."
-    });
-    
-    // Reset form
-    setFormData({
-      name: "",
-      email: "",
-      service: "",
-      message: ""
-    });
+    try {
+      // Save to database
+      const { error: dbError } = await supabase
+        .from('contact_messages')
+        .insert([
+          {
+            name: formData.name,
+            email: formData.email,
+            service: formData.service || null,
+            message: formData.message
+          }
+        ]);
+
+      if (dbError) throw dbError;
+
+      // Send email
+      const { error: emailError } = await supabase.functions.invoke('send-contact-email', {
+        body: {
+          name: formData.name,
+          email: formData.email,
+          service: formData.service,
+          message: formData.message
+        }
+      });
+
+      if (emailError) {
+        console.error('Email sending failed:', emailError);
+        // Still show success since message was saved to database
+      }
+
+      toast({
+        title: "Message Sent!",
+        description: "Thank you for reaching out. We'll get back to you within 24 hours."
+      });
+      
+      // Reset form
+      setFormData({
+        name: "",
+        email: "",
+        service: "",
+        message: ""
+      });
+    } catch (error) {
+      console.error('Contact form error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to send message. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -117,9 +160,10 @@ export const ContactForm = () => {
             
             <Button 
               type="submit" 
+              disabled={isLoading}
               className="w-full glow bg-gradient-to-r from-primary to-accent hover:from-primary-glow hover:to-accent-glow group"
             >
-              Send Message
+              {isLoading ? "Sending..." : "Send Message"}
               <Send className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Button>
           </form>

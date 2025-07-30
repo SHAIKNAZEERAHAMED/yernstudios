@@ -3,6 +3,8 @@ import { useToast } from "@/hooks/use-toast";
 import videoEditingChar from "@/assets/video-editing-char.jpg";
 import webDevChar from "@/assets/web-dev-char.jpg";
 import appDevChar from "@/assets/app-dev-char.jpg";
+import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 
 const videoPackages = [
   {
@@ -72,15 +74,62 @@ const appPackages = [
 
 export const PackagesScreen = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
 
-  const handleSelectPackage = (packageTitle: string, price: string) => {
-    toast({
-      title: "Package Selected!",
-      description: `You selected ${packageTitle} for ${price}. Redirecting to checkout...`
-    });
-    
-    // Here you would integrate with your payment system
-    // For now, we'll just show the success message
+  const handleSelectPackage = async (packageTitle: string, price: string, packageType: string, packageTier: string) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: "Authentication Required",
+          description: "Please login to purchase a package."
+        });
+        navigate('/login');
+        return;
+      }
+
+      // Get user profile
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('display_name')
+        .eq('user_id', user.id)
+        .single();
+
+      // Create order record
+      const { data: order, error } = await supabase
+        .from('orders')
+        .insert([{
+          user_id: user.id,
+          package_name: packageTitle,
+          package_type: packageType,
+          package_tier: packageTier,
+          amount: parseInt(price.replace('$', '').replace(',', '')) * 100, // Convert to cents
+          currency: 'usd',
+          status: 'pending',
+          customer_name: profile?.display_name || user.email?.split('@')[0],
+          customer_email: user.email
+        }])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      toast({
+        title: "Order Created!",
+        description: `Your order for ${packageTitle} has been created. We'll contact you shortly to begin your project.`
+      });
+
+      // Redirect to dashboard to see the order
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('Order creation error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to create order. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   return (
@@ -110,7 +159,7 @@ export const PackagesScreen = () => {
                 features={pkg.features}
                 characterImage={videoEditingChar}
                 isPopular={pkg.isPopular}
-                onSelect={() => handleSelectPackage(pkg.title, pkg.price)}
+                onSelect={() => handleSelectPackage(pkg.title, pkg.price, "Video Editing", pkg.title)}
               />
             ))}
           </div>
@@ -130,7 +179,7 @@ export const PackagesScreen = () => {
                 features={pkg.features}
                 characterImage={webDevChar}
                 isPopular={pkg.isPopular}
-                onSelect={() => handleSelectPackage(pkg.title, pkg.price)}
+                onSelect={() => handleSelectPackage(pkg.title, pkg.price, "Web Development", pkg.title)}
               />
             ))}
           </div>
@@ -150,7 +199,7 @@ export const PackagesScreen = () => {
                 features={pkg.features}
                 characterImage={appDevChar}
                 isPopular={pkg.isPopular}
-                onSelect={() => handleSelectPackage(pkg.title, pkg.price)}
+                onSelect={() => handleSelectPackage(pkg.title, pkg.price, "App Development", pkg.title)}
               />
             ))}
           </div>

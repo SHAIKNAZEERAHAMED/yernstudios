@@ -5,33 +5,44 @@ import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthLayout } from "./auth-layout";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 export const LoginForm = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: ""
   });
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     
-    // Simulate successful login
-    toast({
-      title: "Welcome back!",
-      description: "You have been logged in successfully."
-    });
-    
-    // Store user data in localStorage for demo
-    localStorage.setItem('yarn_user', JSON.stringify({
-      name: "Akari",
-      email: formData.email,
-      profilePicture: "/lovable-uploads/bca78104-5a6d-4dca-851d-d9c5b46332fd.png",
-      membershipLevel: "Premium Member"
-    }));
-    
-    navigate('/dashboard');
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Welcome back!",
+        description: "You have been logged in successfully."
+      });
+      
+      navigate('/dashboard');
+    } catch (error: any) {
+      toast({
+        title: "Login Failed",
+        description: error.message || "Please check your credentials and try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -77,9 +88,10 @@ export const LoginForm = () => {
         
         <Button 
           type="submit" 
+          disabled={isLoading}
           className="w-full glow bg-gradient-to-r from-primary to-accent hover:from-primary-glow hover:to-accent-glow"
         >
-          Login
+          {isLoading ? "Signing in..." : "Login"}
         </Button>
         
         <p className="text-center text-sm text-muted-foreground">

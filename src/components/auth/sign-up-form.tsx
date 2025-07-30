@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthLayout } from "./auth-layout";
 import { Camera } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 export const SignUpForm = () => {
   const [formData, setFormData] = useState({
@@ -14,10 +15,11 @@ export const SignUpForm = () => {
     password: "",
     confirmPassword: ""
   });
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (formData.password !== formData.confirmPassword) {
@@ -29,20 +31,36 @@ export const SignUpForm = () => {
       return;
     }
 
-    // Simulate successful registration
-    toast({
-      title: "Welcome to YeRN Studios!",
-      description: "Your account has been created successfully."
-    });
+    setIsLoading(true);
     
-    // Store user data in localStorage for demo
-    localStorage.setItem('yarn_user', JSON.stringify({
-      name: formData.name,
-      email: formData.email,
-      profilePicture: "/lovable-uploads/bca78104-5a6d-4dca-851d-d9c5b46332fd.png"
-    }));
-    
-    navigate('/dashboard');
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: {
+            display_name: formData.name
+          }
+        }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Welcome to YeRN Studios!",
+        description: "Please check your email to confirm your account."
+      });
+      
+      navigate('/login');
+    } catch (error: any) {
+      toast({
+        title: "Registration Failed",
+        description: error.message || "Failed to create account. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -112,9 +130,10 @@ export const SignUpForm = () => {
         
         <Button 
           type="submit" 
+          disabled={isLoading}
           className="w-full glow bg-gradient-to-r from-primary to-accent hover:from-primary-glow hover:to-accent-glow"
         >
-          Sign Up
+          {isLoading ? "Creating Account..." : "Sign Up"}
         </Button>
         
         <p className="text-center text-sm text-muted-foreground">
