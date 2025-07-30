@@ -14,6 +14,7 @@ import Projects from "./pages/Projects";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import AdminLogin from "./pages/AdminLogin";
+import AdminDashboard from "./pages/AdminDashboard";
 
 const queryClient = new QueryClient();
 
@@ -29,10 +30,11 @@ const AppContent = () => {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/packages" element={<Packages />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dashboard" element={<Profile />} />
         <Route path="/projects" element={<Projects />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/admin-login" element={<AdminLogin />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       {!hideNavigation && <BottomNavigation />}

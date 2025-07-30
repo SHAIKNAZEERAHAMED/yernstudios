@@ -39,7 +39,7 @@ const AdminLogin = () => {
         title: "Welcome, Admin!",
         description: "You have been logged in as admin."
       });
-      navigate("/dashboard");
+      navigate("/admin-dashboard");
     } catch (error: any) {
       toast({
         title: "Login Failed",
