@@ -23,15 +23,26 @@ export const WelcomeScreen = () => {
             <span className="text-accent">Let's craft your story.</span>
           </p>
           
-          <Link to="/login">
-            <Button 
-              size="lg" 
-              className="glow bg-gradient-to-r from-primary to-accent hover:from-primary-glow hover:to-accent-glow text-lg px-8 py-6 rounded-full group"
-            >
-              Get Started
-              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Button>
-          </Link>
+          <div className="flex gap-4 justify-center lg:justify-start">
+            <Link to="/login">
+              <Button 
+                size="lg" 
+                className="glow bg-gradient-to-r from-primary to-accent hover:from-primary-glow hover:to-accent-glow text-lg px-8 py-6 rounded-full group"
+              >
+                Get Started
+                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </Link>
+            <Link to="/admin-login">
+              <Button 
+                size="lg" 
+                variant="outline"
+                className="ml-2 border-primary text-primary"
+              >
+                Admin Login
+              </Button>
+            </Link>
+          </div>
         </div>
         
         {/* Right Content - Character Illustration */}
