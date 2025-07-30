@@ -26,6 +26,8 @@ export const BottomNavigation = () => {
     { icon: Package, label: "Packages", path: "/packages" },
     { icon: FolderOpen, label: "Projects", path: "/projects" },
     { icon: Mail, label: "Contact", path: "/contact" },
+    // Add Shoots for non-admins
+    ...(!isAdmin ? [{ icon: Package, label: "Shoots", path: "/shoots" }] : []),
     // Only show Dashboard for non-admins
     ...(!isAdmin
       ? [{ icon: User, label: "Dashboard", path: "/dashboard" }]
