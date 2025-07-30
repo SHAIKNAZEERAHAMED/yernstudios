@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { FolderOpen, MessageCircle, Package } from "lucide-react";
+import { FolderOpen, LogOut, MessageCircle, Package } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -53,6 +53,15 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      navigate('/login');
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
   if (isLoading) {
     return <div className="min-h-screen flex items-center justify-center text-xl">Loading...</div>;
   }
@@ -60,8 +69,11 @@ const AdminDashboard = () => {
   return (
     <div className="min-h-screen py-20 px-6">
       <div className="max-w-6xl mx-auto">
-        <div className="flex items-center gap-4 mb-8">
+        <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold gradient-text">Admin Dashboard</h1>
+          <Button onClick={handleLogout} variant="outline" className="border-glass-border">
+            <LogOut className="w-4 h-4 mr-2" /> Logout
+          </Button>
         </div>
         <div className="grid md:grid-cols-3 gap-6 mb-8">
           <Card className="glass-card p-6">

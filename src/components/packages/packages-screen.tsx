@@ -79,7 +79,6 @@ export const PackagesScreen = () => {
   const handleSelectPackage = async (packageTitle: string, price: string, packageType: string, packageTier: string) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      
       if (!user) {
         toast({
           title: "Authentication Required",
@@ -88,24 +87,25 @@ export const PackagesScreen = () => {
         navigate('/login');
         return;
       }
-
       // Get user profile
       const { data: profile } = await supabase
         .from('profiles')
         .select('display_name')
         .eq('user_id', user.id)
         .single();
-
       // Prompt for more details
-      const contact = prompt('Enter your contact number:');
-      const details = prompt('Describe your project requirements:');
-      if (!contact || !details) {
-        toast({ title: 'Details Required', description: 'Contact and description are required.' });
-        return;
+      let contact = '';
+      let details = '';
+      while (!contact) {
+        contact = window.prompt('Enter your contact number:') || '';
+        if (!contact) alert('Contact number is required!');
       }
-
+      while (!details) {
+        details = window.prompt('Describe your project requirements:') || '';
+        if (!details) alert('Project description is required!');
+      }
       // Create order record
-      const { data: order, error } = await supabase
+      const { error } = await supabase
         .from('orders')
         .insert([{
           user_id: user.id,
@@ -119,18 +119,12 @@ export const PackagesScreen = () => {
           customer_email: user.email,
           contact,
           details
-        }])
-        .select()
-        .single();
-
+        }]);
       if (error) throw error;
-
       toast({
         title: "Order Created!",
         description: `Your order for ${packageTitle} has been created. We'll contact you shortly to begin your project.`
       });
-
-      // Redirect to dashboard to see the order
       navigate('/dashboard');
     } catch (error) {
       console.error('Order creation error:', error);

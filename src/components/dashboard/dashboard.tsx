@@ -171,7 +171,7 @@ export const Dashboard = () => {
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut();
-      navigate('/');
+      navigate('/login');
     } catch (error) {
       console.error('Error logging out:', error);
     }
