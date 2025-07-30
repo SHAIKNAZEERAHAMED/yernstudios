@@ -20,7 +20,7 @@ const queryClient = new QueryClient();
 
 const AppContent = () => {
   const location = useLocation();
-  const hideNavigation = ['/', '/login', '/signup'].includes(location.pathname);
+  const hideNavigation = ['/', '/login', '/signup', '/admin-login'].includes(location.pathname);
 
   return (
     <>
