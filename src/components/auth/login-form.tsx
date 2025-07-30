@@ -26,7 +26,18 @@ export const LoginForm = () => {
         password: formData.password,
       });
 
-      if (error) throw error;
+      if (error) {
+        if (error.message && error.message.toLowerCase().includes("email not confirmed")) {
+          toast({
+            title: "Email Not Confirmed",
+            description: "Please check your inbox and confirm your email before logging in. If you didn't receive the email, check your spam folder or request a new confirmation email.",
+            variant: "destructive"
+          });
+          setIsLoading(false);
+          return;
+        }
+        throw error;
+      }
 
       toast({
         title: "Welcome back!",
