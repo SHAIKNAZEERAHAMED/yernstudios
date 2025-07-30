@@ -27,6 +27,7 @@ const Profile = () => {
   });
   const [orders, setOrders] = useState<any[]>([]);
   const [projects, setProjects] = useState<any[]>([]);
+  const [shootOrders, setShootOrders] = useState<any[]>([]);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -69,6 +70,13 @@ const Profile = () => {
           .eq('user_id', authUser.id)
           .order('created_at', { ascending: false });
         setOrders(userOrders || []);
+        // Fetch user shoot orders
+        const { data: userShootOrders } = await supabase
+          .from('shoot_orders')
+          .select('*')
+          .eq('user_id', authUser.id)
+          .order('created_at', { ascending: false });
+        setShootOrders(userShootOrders || []);
       }
     };
     checkAdmin();
@@ -249,6 +257,42 @@ const Profile = () => {
                       onClick={async () => {
                         await supabase.from('orders').delete().eq('id', order.id);
                         setOrders(orders.filter(o => o.id !== order.id));
+                      }}
+                    >
+                      Delete
+                    </Button>
+                  )}
+                </div>
+                <p className="text-muted-foreground text-sm">{order.details}</p>
+              </Card>
+            ))
+          )}
+        </div>
+
+        {/* My Shoot Orders Section */}
+        <div className="mt-12">
+          <h2 className="text-2xl font-bold mb-4">My Shoot Orders</h2>
+          {shootOrders.length === 0 ? (
+            <Card className="glass-card p-6 text-center">
+              <p className="text-muted-foreground">No shoot orders yet. Order a shoot to get started!</p>
+            </Card>
+          ) : (
+            shootOrders.map((order) => (
+              <Card key={order.id} className="glass-card p-6 mb-4">
+                <div className="flex justify-between items-center mb-2">
+                  <div>
+                    <h3 className="font-bold">{order.shoot_type}</h3>
+                    <p className="text-sm text-muted-foreground mb-1">{order.location}</p>
+                    <p className="text-xs text-muted-foreground">{new Date(order.created_at).toLocaleDateString()}</p>
+                  </div>
+                  <Badge variant={order.status === 'completed' ? 'default' : 'secondary'}>{order.status}</Badge>
+                  {order.status === 'pending' && (
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={async () => {
+                        await supabase.from('shoot_orders').delete().eq('id', order.id);
+                        setShootOrders(shootOrders.filter(o => o.id !== order.id));
                       }}
                     >
                       Delete

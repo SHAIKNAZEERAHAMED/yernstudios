@@ -15,6 +15,7 @@ const ADMIN_EMAILS = [
 
 const AdminDashboard = () => {
   const [orders, setOrders] = useState<any[]>([]);
+  const [shootOrders, setShootOrders] = useState<any[]>([]);
   const [contactMessages, setContactMessages] = useState<any[]>([]);
   const [projects, setProjects] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -43,9 +44,11 @@ const AdminDashboard = () => {
   const loadAdminData = async () => {
     try {
       const { data: ordersData } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
+      const { data: shootOrdersData } = await supabase.from('shoot_orders').select('*').order('created_at', { ascending: false });
       const { data: messagesData } = await supabase.from('contact_messages').select('*').order('created_at', { ascending: false });
       const { data: projectsData } = await supabase.from('projects').select('*').order('created_at', { ascending: false });
       setOrders(ordersData || []);
+      setShootOrders(shootOrdersData || []);
       setContactMessages(messagesData || []);
       setProjects(projectsData || []);
     } catch (error) {
@@ -145,6 +148,41 @@ const AdminDashboard = () => {
                     <TableCell>{new Date(order.created_at).toLocaleDateString()}</TableCell>
                     <TableCell>{order.contact || '-'}</TableCell>
                     <TableCell>{order.details || '-'}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Card>
+        </section>
+        <section className="mb-8">
+          <h2 className="text-2xl font-bold mb-6">Recent Shoot Orders</h2>
+          <Card className="glass-card">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Customer Email</TableHead>
+                  <TableHead>Shoot Type</TableHead>
+                  <TableHead>Location</TableHead>
+                  <TableHead>Price</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Contact</TableHead>
+                  <TableHead>Details</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {shootOrders.slice(0, 10).map((order) => (
+                  <TableRow key={order.id}>
+                    <TableCell>{order.customer_email}</TableCell>
+                    <TableCell>{order.shoot_type}</TableCell>
+                    <TableCell>{order.location}</TableCell>
+                    <TableCell>₹{order.price}</TableCell>
+                    <TableCell>
+                      <Badge variant={order.status === 'completed' ? 'default' : 'secondary'}>{order.status}</Badge>
+                    </TableCell>
+                    <TableCell>{new Date(order.created_at).toLocaleDateString()}</TableCell>
+                    <TableCell>{order.contact}</TableCell>
+                    <TableCell>{order.details}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
