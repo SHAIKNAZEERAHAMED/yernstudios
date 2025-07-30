@@ -100,14 +100,24 @@ export const PackagesScreen = () => {
       }
       // Prompt for more details
       let contact = '';
-      let details = '';
-      while (!contact) {
-        contact = window.prompt('Enter your contact number:') || '';
-        if (!contact) alert('Contact number is required!');
+      while (true) {
+        const input = window.prompt('Enter your contact number:');
+        if (input === null) return; // User cancelled
+        if (input) {
+          contact = input;
+          break;
+        }
+        alert('Contact number is required!');
       }
-      while (!details) {
-        details = window.prompt('Describe your project requirements:') || '';
-        if (!details) alert('Project description is required!');
+      let details = '';
+      while (true) {
+        const input = window.prompt('Describe your project requirements:');
+        if (input === null) return; // User cancelled
+        if (input) {
+          details = input;
+          break;
+        }
+        alert('Project description is required!');
       }
       // Create order record
       const { error } = await supabase
