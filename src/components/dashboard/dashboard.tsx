@@ -386,6 +386,18 @@ export const Dashboard = () => {
                         <Badge variant={order.status === 'completed' ? 'default' : 'secondary'}>
                           {order.status}
                         </Badge>
+                        {order.status === 'pending' && (
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={async () => {
+                              await supabase.from('orders').delete().eq('id', order.id);
+                              setOrders(orders.filter(o => o.id !== order.id));
+                            }}
+                          >
+                            Delete
+                          </Button>
+                        )}
                       </div>
                       <p className="text-sm text-muted-foreground mb-2">
                         {order.package_type} - {order.package_tier}
