@@ -15,6 +15,7 @@ import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
+import Shoots from "@/pages/Shoots";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +36,7 @@ const AppContent = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="/admin-login" element={<AdminLogin />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route path="/shoots" element={<Shoots />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       {!hideNavigation && <BottomNavigation />}
