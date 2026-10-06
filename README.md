@@ -33,9 +33,13 @@ npm run lint
 
 Supabase configuration is supplied through the project's existing client integration. Keep private credentials and service-role keys out of source control.
 
+## Live site
+
+https://yernstudios.netlify.app/
+
 ## Deployment
 
-The repository contains a Vite production build and can be deployed to any compatible static hosting provider. No deployment claim is made here for the current project.
+The repository contains a Vite production build and can be deployed to any compatible static hosting provider.
 
 ## License
 
